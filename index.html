@@ -3,27 +3,600 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My First Page</title>
+    <title>DCIM Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Minimal styles for a centered circle */
-        html, body { height: 100%; }
-        body { margin: 0; }
-        .center-circle {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
+        :root {
+            color-scheme: dark;
+            --bg-primary: #0f172a;
+            --bg-secondary: #111c34;
+            --bg-elevated: #19233d;
+            --bg-card: #1f2b48;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-yellow: #fbbf24;
+            --accent-red: #f87171;
+            --border-color: rgba(148, 163, 184, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.2), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.25), transparent 45%),
+                        var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #0f172a 0%, rgba(15, 23, 42, 0.65) 100%);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--text-primary);
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 0.75rem;
+            background: rgba(37, 99, 235, 0.18);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .sidebar-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.85rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: #3498db;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            pointer-events: none; /* avoid blocking clicks */
+            background: linear-gradient(135deg, #6366f1, #2563eb);
+            display: grid;
+            place-items: center;
+            font-weight: 600;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 3rem;
+            gap: 2rem;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 1rem;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-placeholder {
+            color: var(--text-secondary);
+        }
+
+        .status-group {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .status-item strong {
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-card {
+            background: var(--bg-elevated);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            border: 1px solid rgba(15, 23, 42, 0.35);
+            box-shadow: 0 14px 45px rgba(15, 23, 42, 0.35);
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            align-self: flex-start;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge.ok { background: rgba(16, 185, 129, 0.12); color: var(--accent-green); }
+        .badge.warning { background: rgba(251, 191, 36, 0.18); color: var(--accent-yellow); }
+        .badge.alert { background: rgba(248, 113, 113, 0.18); color: var(--accent-red); }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: var(--bg-elevated);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            border: 1px solid rgba(15, 23, 42, 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1.25rem;
+        }
+
+        .region-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            border: 1px solid rgba(15, 23, 42, 0.4);
+        }
+
+        .region-name {
+            font-weight: 600;
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.18);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.9));
+        }
+
+        .progress-fill.secondary {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.35), rgba(16, 185, 129, 0.9));
+        }
+
+        .metric-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .alerts-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.85rem;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(15, 23, 42, 0.35);
+        }
+
+        .alert-label {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.65rem;
+            display: grid;
+            place-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .alert-label.warning { background: rgba(251, 191, 36, 0.2); color: var(--accent-yellow); }
+        .alert-label.alert { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+        .alert-label.info { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+
+        .alert-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .alert-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1200px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .nav-section {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 1rem 1.5rem;
+            }
+
+            .nav-group {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .nav-label {
+                display: none;
+            }
+
+            .main {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-group {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Hello, world!</h1>
-    <div class="center-circle" aria-hidden="true"></div>
+    <aside class="sidebar">
+        <div class="logo">DCIM</div>
+        <nav class="nav-section">
+            <div class="nav-group">
+                <div class="nav-label">Main</div>
+                <a class="nav-link active" href="#"><span class="nav-icon">D</span>Dashboard</a>
+                <a class="nav-link" href="#"><span class="nav-icon">I</span>Infrastructure</a>
+                <a class="nav-link" href="#"><span class="nav-icon">S</span>Devices</a>
+                <a class="nav-link" href="#"><span class="nav-icon">P</span>Power</a>
+            </div>
+            <div class="nav-group">
+                <div class="nav-label">Explore</div>
+                <a class="nav-link" href="#"><span class="nav-icon">C</span>Contacts</a>
+                <a class="nav-link" href="#"><span class="nav-icon">M</span>Maintenance</a>
+                <a class="nav-link" href="#"><span class="nav-icon">R</span>Reports</a>
+                <a class="nav-link" href="#"><span class="nav-icon">S</span>Settings</a>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="avatar">A</div>
+            <div>
+                <div style="font-weight: 600;">Alana Miles</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">Admin</div>
+            </div>
+        </div>
+    </aside>
+    <main class="main">
+        <div class="top-bar">
+            <div class="search-bar">
+                <span class="search-placeholder">Search devices, racks, sites…</span>
+                <input class="search-input" type="text" aria-label="Search" />
+            </div>
+            <div class="status-group">
+                <div class="status-item">Status <strong>Operational</strong></div>
+                <div class="status-item">Last sync <strong>2 mins ago</strong></div>
+                <div class="status-item">Alerts <strong>3 open</strong></div>
+            </div>
+        </div>
+
+        <section class="summary-grid">
+            <article class="summary-card">
+                <span class="summary-label">Devices</span>
+                <span class="summary-value">5</span>
+                <span class="badge ok">Online</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Racks</span>
+                <span class="summary-value">3</span>
+                <span class="badge warning">Warning</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Power</span>
+                <span class="summary-value">22.9 / 32 kW</span>
+                <span class="badge warning">Near limit</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Contracts expiring</span>
+                <span class="summary-value">3</span>
+                <span class="badge warning">30 days</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Infra defects</span>
+                <span class="summary-value">4</span>
+                <span class="badge alert">High</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Network</span>
+                <span class="summary-value">19 / 21</span>
+                <span class="badge ok">Stable</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Ticket SLA</span>
+                <span class="summary-value">87%</span>
+                <span class="badge ok">On track</span>
+            </article>
+            <article class="summary-card">
+                <span class="summary-label">Maintenance</span>
+                <span class="summary-value">6 events</span>
+                <span class="badge warning">Upcoming</span>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <section class="panel">
+                <header class="panel-header">
+                    <h2 class="panel-title">Infrastructure Overview</h2>
+                    <span class="summary-label">Region</span>
+                </header>
+                <div class="region-grid">
+                    <article class="region-card">
+                        <span class="region-name">Europe</span>
+                        <div class="metric-list">
+                            <div class="metric-item"><span>Sites</span><span class="metric-value">12</span></div>
+                            <div class="metric-item"><span>Devices</span><span class="metric-value">145</span></div>
+                        </div>
+                        <div>
+                            <div class="summary-label">Rack Capacity (90%)</div>
+                            <div class="progress"><div class="progress-fill" style="width: 90%;"></div></div>
+                        </div>
+                    </article>
+                    <article class="region-card">
+                        <span class="region-name">US East</span>
+                        <div class="metric-list">
+                            <div class="metric-item"><span>Sites</span><span class="metric-value">8</span></div>
+                            <div class="metric-item"><span>Devices</span><span class="metric-value">98</span></div>
+                        </div>
+                        <div>
+                            <div class="summary-label">Ports Utilization (67%)</div>
+                            <div class="progress"><div class="progress-fill secondary" style="width: 67%;"></div></div>
+                        </div>
+                    </article>
+                    <article class="region-card">
+                        <span class="region-name">Asia</span>
+                        <div class="metric-list">
+                            <div class="metric-item"><span>Sites</span><span class="metric-value">5</span></div>
+                            <div class="metric-item"><span>Devices</span><span class="metric-value">64</span></div>
+                        </div>
+                        <div>
+                            <div class="summary-label">Power Utilization (72%)</div>
+                            <div class="progress"><div class="progress-fill" style="width: 72%;"></div></div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="metric-list">
+                    <div class="metric-item"><span>Device Types: Distribution</span><span class="metric-value">Servers 56% · Switch 24% · Router 12%</span></div>
+                    <div class="metric-item"><span>Cooling Efficiency</span><span class="metric-value">74%</span></div>
+                    <div class="metric-item"><span>Average Latency</span><span class="metric-value">12.3 ms</span></div>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <header class="panel-header">
+                    <h2 class="panel-title">Alerts & Notifications</h2>
+                    <span class="summary-label">Last updated 2m ago</span>
+                </header>
+                <div class="alerts-list">
+                    <div class="alert-item">
+                        <div class="alert-label alert">sev</div>
+                        <div class="alert-content">
+                            <span class="alert-title">Power feed threshold</span>
+                            <span class="alert-meta">DCX-11 · Rack 7A · 1m ago</span>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-label warning">ack</div>
+                        <div class="alert-content">
+                            <span class="alert-title">Cooling redundancy degraded</span>
+                            <span class="alert-meta">Site LDN-02 · 4m ago</span>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-label warning">maint</div>
+                        <div class="alert-content">
+                            <span class="alert-title">Generator test pending</span>
+                            <span class="alert-meta">Campus SFO · 10m ago</span>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-label info">info</div>
+                        <div class="alert-content">
+                            <span class="alert-title">Firmware updates available</span>
+                            <span class="alert-meta">Applies to 12 devices</span>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-label info">info</div>
+                        <div class="alert-content">
+                            <span class="alert-title">Bandwidth spike</span>
+                            <span class="alert-meta">Edge links · 22m ago</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
 </body>
 </html>
